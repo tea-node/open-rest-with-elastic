@@ -1,5 +1,5 @@
 const ElasticSearch = require('@elastic/elasticsearch');
-const model = require('./lib/model');
+const register = require('./lib/register');
 
 const Init = (rest, path) => {
   const { elastic } = rest.utils.require(`${path}/configs`) || {};
@@ -11,7 +11,7 @@ const Init = (rest, path) => {
     * model 的 初始化
     * 将获取Model类的方法注册到rest.utils上
     */
-  rest.utils.elastic = model(elastic, path, rest);
+  rest.utils.elastic = register(elastic, path, rest);
 
   return rest.utils.elastic;
 };

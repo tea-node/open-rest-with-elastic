@@ -5,7 +5,7 @@ const includes = require('lodash/includes');
 const each = require('lodash/each');
 const rest = require('open-rest');
 const { elastic } = require('./app/configs');
-const model = require('../lib/model');
+const register = require('../lib/register');
 
 const { utils } = rest;
 
@@ -17,14 +17,14 @@ describe('lib/model', () => {
     utils.logger.error = () => {};
 
     it('model dir non-exists', (done) => {
-      getModel = model(elastic, `${__dirname}/models-non-exists`, rest);
+      getModel = register(elastic, `${__dirname}/models-non-exists`, rest);
       assert.ok(getModel instanceof Function);
 
       done();
     });
 
     it('model dir exists', (done) => {
-      getModel = model(elastic, `${__dirname}/app`, rest);
+      getModel = register(elastic, `${__dirname}/app`, rest);
       assert.ok(getModel instanceof Function);
       done();
     });
@@ -58,7 +58,7 @@ describe('lib/model', () => {
 
       process.argv.push('type-sync');
 
-      model(elastic, `${__dirname}/app`, rest);
+      register(elastic, `${__dirname}/app`, rest);
 
       utils.logger.info = infoLog;
       process.env.NODE_ENV = NODE_ENV;
@@ -72,7 +72,7 @@ describe('lib/model', () => {
       const infoLog = utils.logger.info;
 
       process.env.NODE_ENV = 'development';
-      model(elastic, `${__dirname}/app`, rest);
+      register(elastic, `${__dirname}/app`, rest);
 
       utils.logger.info = infoLog;
       process.env.NODE_ENV = NODE_ENV;
@@ -81,14 +81,14 @@ describe('lib/model', () => {
     });
 
     it('elastic is null', (done) => {
-      getModel = model(null, `${__dirname}/app`, rest);
+      getModel = register(null, `${__dirname}/app`, rest);
       assert.ok(getModel instanceof Function);
       assert.deepEqual({}, getModel());
       done();
     });
 
     it('reset ENV isnt production', (done) => {
-      getModel = model(elastic, `${__dirname}/app`, rest);
+      getModel = register(elastic, `${__dirname}/app`, rest);
       assert.ok(getModel.reset instanceof Function);
       assert.equal(1, keys(getModel()).length);
 
@@ -101,7 +101,7 @@ describe('lib/model', () => {
     it('reset ENV is production', (done) => {
       rest.utils.isProd = true;
       getModel.reset();
-      getModel = model(elastic, `${__dirname}/app`, rest);
+      getModel = register(elastic, `${__dirname}/app`, rest);
       assert.equal(null, getModel.reset);
       assert.equal(1, keys(getModel()).length);
 
@@ -110,7 +110,7 @@ describe('lib/model', () => {
 
     it('done path is null', (done) => {
       utils.logger.error = () => {};
-      getModel = model(elastic, null, rest);
+      getModel = register(elastic, null, rest);
       assert.ok(getModel instanceof Function);
       assert.deepEqual({}, getModel());
       utils.logger.error = errorLog;
