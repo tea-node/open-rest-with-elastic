@@ -1,5 +1,8 @@
 const ElasticSearch = require('@elastic/elasticsearch');
 const register = require('./lib/register');
+const Model = require('./lib/model');
+
+ElasticSearch.Model = Model;
 
 const Init = (rest, path) => {
   const { elastic } = rest.utils.require(`${path}/configs`) || {};
